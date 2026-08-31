@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ZeroHunger Connect</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="topbar">
+    <div class="brand"><span class="stamp">Z</span> ZeroHunger Connect</div>
+    <nav>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+    </nav>
+</div>
+
+<section class="hero">
+    <div class="eyebrow" style="color:#D9A441;">SDG 2 &middot; Zero Hunger</div>
+    <h1>Surplus food, tracked from crate to table.</h1>
+    <p>ZeroHunger Connect links donors, verified NGOs and volunteers into one
+        pipeline &mdash; every donation logged, assigned and delivered with a
+        full paper trail.</p>
+    <div class="cta-row">
+        <a href="/register" class="btn btn-accent">Get started</a>
+        <a href="/login" class="btn" style="border:1.5px solid #fff; color:#fff;">Sign in</a>
+    </div>
+</section>
+
+<div class="role-strip">
+    <div class="role-card">
+        <div class="icon">📦</div>
+        <h4>Donors</h4>
+        <p>List surplus food with quantity and expiry, and track it through delivery.</p>
+    </div>
+    <div class="role-card">
+        <div class="icon">🏛️</div>
+        <h4>NGOs</h4>
+        <p>Accept incoming donations and assign a volunteer for pickup.</p>
+    </div>
+    <div class="role-card">
+        <div class="icon">🚴</div>
+        <h4>Volunteers</h4>
+        <p>See assigned pickups and confirm delivery in the field.</p>
+    </div>
+    <div class="role-card">
+        <div class="icon">📋</div>
+        <h4>Admins</h4>
+        <p>Verify NGOs and monitor food rescued system-wide.</p>
+    </div>
+</div>
+
+<footer>ZeroHunger Connect &middot; Food Donation Management System</footer>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Volunteer Dashboard - ZeroHunger Connect</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar('volunteer')}"></div>
+
+<div class="container">
+    <div class="page-head">
+        <div class="eyebrow">Volunteer Module</div>
+        <h1 th:text="${volunteer.appUser.fullName}">Volunteer Name</h1>
+        <p class="muted" th:text="'Area: ' + ${volunteer.area} + ' &middot; Completed deliveries: ' + ${volunteer.completedDeliveries}"></p>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Availability</div>
+        <p>
+            Status:
+            <span th:if="${volunteer.available}" class="badge badge-delivered">Available</span>
+            <span th:unless="${volunteer.available}" class="badge badge-declined">Unavailable</span>
+        </p>
+        <form th:action="@{/volunteer/toggle-availability}" method="post">
+            <button type="submit" class="btn btn-outline btn-sm">Toggle availability</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Your assigned pickups</div>
+        <table th:if="${!assignedDonations.isEmpty()}">
+            <thead><tr><th>ID</th><th>Donor</th><th>NGO</th><th>Items</th><th>Pickup address</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+            <tr th:each="d : ${assignedDonations}">
+                <td th:text="'DN' + ${#strings.substring(('000' + d.id),(('000' + d.id).length() -3))}"></td>
+                <td th:text="${d.donor.appUser.fullName}"></td>
+                <td th:text="${d.ngo.appUser.fullName}"></td>
+                <td>
+                    <span th:each="item, iter : ${d.foodItems}">
+                        <span th:text="${item.type}"></span><span th:if="!${iter.last}">, </span>
+                    </span>
+                </td>
+                <td th:text="${d.pickupAddress}"></td>
+                <td><span th:class="'badge badge-' + ${#strings.toLowerCase(d.status)}" th:text="${d.status}"></span></td>
+                <td>
+                    <form th:if="${d.status.name() == 'IN_TRANSIT'}" th:action="@{'/volunteer/confirm-delivery/' + ${d.id}}" method="post" style="display:flex; gap:0.4rem;">
+                        <input type="text" name="remarks" placeholder="Delivery remarks (optional)" style="min-width:160px;">
+                        <button type="submit" class="btn btn-primary btn-sm">Confirm delivered</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="empty-state" th:if="${assignedDonations.isEmpty()}">No pickups assigned to you yet.</div>
+    </div>
+</div>
+
+</body>
+</html>

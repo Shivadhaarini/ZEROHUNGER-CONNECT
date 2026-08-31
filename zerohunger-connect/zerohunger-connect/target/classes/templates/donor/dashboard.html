@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Donor Dashboard - ZeroHunger Connect</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar('donor')}"></div>
+
+<div class="container">
+    <div class="page-head">
+        <div class="eyebrow">Donor Module</div>
+        <h1 th:text="'Welcome, ' + ${donor.appUser.fullName}">Welcome</h1>
+        <p class="muted" th:text="${donor.businessType} + ' &middot; ' + ${donor.address}"></p>
+    </div>
+
+    <div class="grid grid-3" style="margin-bottom: 1.6rem;">
+        <div class="stat-tile">
+            <span class="num" th:text="${donations.size()}">0</span>
+            <span class="label">Total Donations</span>
+        </div>
+        <div class="stat-tile">
+            <span class="num" th:text="${#numbers.formatDecimal(totalGiven, 1, 1)}">0</span>
+            <span class="label">Kg Donated</span>
+        </div>
+        <div class="stat-tile" style="background: var(--wheat-dark);">
+            <a href="/donor/donate" class="btn" style="background:#fff; color: var(--ink); width:100%; margin-top:0.3rem;">+ New Donation</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Your donations</div>
+        <table th:if="${!donations.isEmpty()}">
+            <thead>
+            <tr>
+                <th>ID</th><th>Items</th><th>Total (kg)</th><th>Status</th><th>NGO</th><th>Volunteer</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="d : ${donations}">
+                <td th:text="'DN' + ${#strings.substring(('000' + d.id),(('000' + d.id).length() -3))}">DN001</td>
+                <td>
+                    <span th:each="item, iter : ${d.foodItems}">
+                        <span th:text="${item.type} + ' (' + ${item.quantity} + 'kg)'"></span><span th:if="!${iter.last}">, </span>
+                    </span>
+                </td>
+                <td th:text="${#numbers.formatDecimal(d.totalQuantity, 1, 1)}"></td>
+                <td><span th:class="'badge badge-' + ${#strings.toLowerCase(d.status)}" th:text="${d.status}"></span></td>
+                <td th:text="${d.ngo != null ? d.ngo.appUser.fullName : '—'}"></td>
+                <td th:text="${d.volunteer != null ? d.volunteer.appUser.fullName : '—'}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="empty-state" th:if="${donations.isEmpty()}">
+            No donations yet. Submit your first one to get started.
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

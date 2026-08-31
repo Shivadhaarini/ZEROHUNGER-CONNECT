@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New Donation - ZeroHunger Connect</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar('donor')}"></div>
+
+<div class="container" style="max-width: 720px;">
+    <div class="page-head">
+        <div class="eyebrow">Donor Module</div>
+        <h1>List a food donation</h1>
+        <p class="muted">Add each food item with its quantity and expiry date, then confirm pickup details.</p>
+    </div>
+
+    <form th:action="@{/donor/donate}" method="post" class="card">
+        <div class="card-title">Food items</div>
+        <div id="items">
+            <div class="field-row" style="margin-bottom: 0.5rem;">
+                <div>
+                    <label>Type</label>
+                    <input type="text" name="foodType" placeholder="e.g. Rice" required>
+                </div>
+                <div>
+                    <label>Quantity (kg)</label>
+                    <input type="number" step="0.1" min="0.1" name="foodQuantity" required>
+                </div>
+                <div>
+                    <label>Expiry date</label>
+                    <input type="date" name="foodExpiry" required>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm" onclick="addItem()">+ Add another item</button>
+
+        <div class="card-title" style="margin-top:1.6rem;">Pickup details</div>
+        <label for="pickupAddress">Pickup address</label>
+        <input type="text" id="pickupAddress" name="pickupAddress" required>
+
+        <div class="field-row">
+            <div>
+                <label for="pickupLat">Pickup latitude (optional)</label>
+                <input type="text" id="pickupLat" name="pickupLat" placeholder="e.g. 13.0827">
+            </div>
+            <div>
+                <label for="pickupLon">Pickup longitude (optional)</label>
+                <input type="text" id="pickupLon" name="pickupLon" placeholder="e.g. 80.2707">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top:1.4rem;">Submit donation</button>
+        <a href="/donor/dashboard" class="btn btn-outline" style="margin-top:1.4rem;">Cancel</a>
+    </form>
+</div>
+
+<template id="itemTemplate">
+    <div class="field-row" style="margin-bottom: 0.5rem;">
+        <div>
+            <label>Type</label>
+            <input type="text" name="foodType" placeholder="e.g. Bread">
+        </div>
+        <div>
+            <label>Quantity (kg)</label>
+            <input type="number" step="0.1" min="0.1" name="foodQuantity">
+        </div>
+        <div>
+            <label>Expiry date</label>
+            <input type="date" name="foodExpiry">
+        </div>
+    </div>
+</template>
+
+<script>
+    function addItem() {
+        const tpl = document.getElementById('itemTemplate');
+        const clone = tpl.content.cloneNode(true);
+        document.getElementById('items').appendChild(clone);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="navbar(active)" class="topbar">
+    <div class="brand"><span class="stamp">Z</span> ZeroHunger Connect</div>
+    <nav>
+        <span th:text="${#authentication.name}" style="opacity:0.8; margin-right: 1.2rem; font-size: 0.85rem;"></span>
+        <a href="/dashboard">Dashboard</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <a href="#" onclick="this.closest('form').submit(); return false;">Logout</a>
+        </form>
+    </nav>
+</div>
+</body>
+</html>

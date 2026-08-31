@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>NGO Dashboard - ZeroHunger Connect</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar('ngo')}"></div>
+
+<div class="container">
+    <div class="page-head">
+        <div class="eyebrow">NGO Module</div>
+        <h1 th:text="${ngo.appUser.fullName}">NGO Name</h1>
+        <p class="muted">
+            <span th:if="${ngo.verified}" class="badge badge-delivered">Verified</span>
+            <span th:unless="${ngo.verified}" class="badge badge-declined">Not yet verified</span>
+            &nbsp; <span th:text="${ngo.focusArea}"></span> &middot; <span th:text="${ngo.address}"></span>
+        </p>
+    </div>
+
+    <div class="alert alert-error" th:if="${param.error} != null">
+        Your NGO account must be verified by an admin before you can accept donations.
+    </div>
+
+    <div class="card">
+        <div class="card-title">Available donations (unassigned)</div>
+        <table th:if="${!availableDonations.isEmpty()}">
+            <thead><tr><th>ID</th><th>Donor</th><th>Items</th><th>Total (kg)</th><th>Submitted</th><th></th></tr></thead>
+            <tbody>
+            <tr th:each="d : ${availableDonations}">
+                <td th:text="'DN' + ${#strings.substring(('000' + d.id),(('000' + d.id).length() -3))}"></td>
+                <td th:text="${d.donor.appUser.fullName}"></td>
+                <td>
+                    <span th:each="item, iter : ${d.foodItems}">
+                        <span th:text="${item.type}"></span><span th:if="!${iter.last}">, </span>
+                    </span>
+                </td>
+                <td th:text="${#numbers.formatDecimal(d.totalQuantity, 1, 1)}"></td>
+                <td th:text="${#temporals.format(d.createdAt, 'dd MMM, HH:mm')}"></td>
+                <td>
+                    <form th:action="@{'/ngo/accept/' + ${d.id}}" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-primary btn-sm">Accept</button>
+                    </form>
+                    <form th:action="@{'/ngo/decline/' + ${d.id}}" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm">Decline</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="empty-state" th:if="${availableDonations.isEmpty()}">No unassigned donations right now.</div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Your accepted donations</div>
+        <table th:if="${!myDonations.isEmpty()}">
+            <thead><tr><th>ID</th><th>Donor</th><th>Total (kg)</th><th>Status</th><th>Volunteer</th><th></th></tr></thead>
+            <tbody>
+            <tr th:each="d : ${myDonations}">
+                <td th:text="'DN' + ${#strings.substring(('000' + d.id),(('000' + d.id).length() -3))}"></td>
+                <td th:text="${d.donor.appUser.fullName}"></td>
+                <td th:text="${#numbers.formatDecimal(d.totalQuantity, 1, 1)}"></td>
+                <td><span th:class="'badge badge-' + ${#strings.toLowerCase(d.status)}" th:text="${d.status}"></span></td>
+                <td th:text="${d.volunteer != null ? d.volunteer.appUser.fullName : '—'}"></td>
+                <td>
+                    <form th:if="${d.volunteer == null}" th:action="@{'/ngo/assign-volunteer/' + ${d.id}}" method="post" style="display:flex; gap:0.4rem;">
+                        <select name="volunteerId" required>
+                            <option value="" disabled selected>Assign volunteer</option>
+                            <option th:each="v : ${volunteers}" th:value="${v.id}" th:text="${v.appUser.fullName} + ' (' + ${v.area} + ')'"></option>
+                        </select>
+                        <button type="submit" class="btn btn-accent btn-sm">Assign</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="empty-state" th:if="${myDonations.isEmpty()}">You haven't accepted any donations yet.</div>
+    </div>
+</div>
+
+</body>
+</html>
